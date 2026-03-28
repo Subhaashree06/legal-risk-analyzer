@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>AI Legal Risk Analyzer</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gradient-to-r from-purple-700 via-purple-600 to-purple-500 min-h-screen flex">
+
+<!-- Sidebar -->
+
+<div class="w-64 bg-indigo-900 text-white p-6">
+
+<h2 class="text-xl font-bold mb-8">⚖ AI Legal Analyzer</h2>
+
+<ul class="space-y-4">
+<li class="opacity-90">Clause Risk Detection</li>
+<li class="opacity-90">Semantic Analysis</li>
+<li class="opacity-90">Dashboard</li>
+</ul>
+
+</div>
+
+<!-- Main Content -->
+
+<div class="flex-1 p-8">
+
+<!-- Input Card -->
+
+<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+
+<h3 class="text-lg font-semibold mb-4">Analyze Terms & Conditions</h3>
+
+<form method="POST" enctype="multipart/form-data">
+
+<textarea name="document"
+class="w-full border p-3 rounded-lg h-32"
+placeholder="Paste Terms & Conditions text here..."></textarea>
+
+<div class="mt-4">
+
+<p class="text-sm text-gray-500 mb-2">OR Upload PDF</p>
+
+<input type="file" name="pdf">
+
+</div>
+
+<button
+class="mt-4 bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700">
+Analyze
+</button>
+
+</form>
+
+</div>
+
+{% if results %}
+
+<!-- Statistics Cards -->
+
+<div class="grid grid-cols-4 gap-6 mb-6">
+
+<div class="bg-red-500 text-white p-5 rounded-xl shadow">
+<p>High Risk</p>
+<h2 class="text-3xl font-bold">{{high}}</h2>
+</div>
+
+<div class="bg-yellow-500 text-white p-5 rounded-xl shadow">
+<p>Medium Risk</p>
+<h2 class="text-3xl font-bold">{{medium}}</h2>
+</div>
+
+<div class="bg-green-500 text-white p-5 rounded-xl shadow">
+<p>Low Risk</p>
+<h2 class="text-3xl font-bold">{{low}}</h2>
+</div>
+
+<div class="bg-indigo-500 text-white p-5 rounded-xl shadow">
+<p>Risk Score</p>
+<h2 class="text-3xl font-bold">{{risk_score}}%</h2>
+</div>
+
+</div>
+
+<!-- Clause Analysis -->
+
+<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+
+<h3 class="text-lg font-semibold mb-4">Clause Analysis</h3>
+
+{% for clause,risk in results %}
+
+<p class="p-3 bg-gray-50 rounded mb-2">
+
+{{clause}} →
+
+{% if risk=="High Risk" %}
+<span class="text-red-600 font-bold">{{risk}}</span>
+
+{% elif risk=="Medium Risk" %}
+<span class="text-yellow-600 font-bold">{{risk}}</span>
+
+{% else %}
+<span class="text-green-600 font-bold">{{risk}}</span>
+{% endif %}
+
+</p>
+
+{% endfor %}
+
+</div>
+
+<!-- Charts -->
+
+<div class="grid grid-cols-2 gap-6">
+
+<div class="bg-white p-6 rounded-xl shadow">
+<canvas id="pieChart"></canvas>
+</div>
+
+<div class="bg-white p-6 rounded-xl shadow">
+<canvas id="barChart"></canvas>
+</div>
+
+</div>
+
+<script>
+
+var high={{high}}
+var medium={{medium}}
+var low={{low}}
+
+new Chart(document.getElementById("pieChart"),{
+type:"pie",
+data:{
+labels:["High Risk","Medium Risk","Low Risk"],
+datasets:[{
+data:[high,medium,low],
+backgroundColor:["#ef4444","#f59e0b","#10b981"]
+}]
+}
+})
+
+new Chart(document.getElementById("barChart"),{
+type:"bar",
+data:{
+labels:["High Risk","Medium Risk","Low Risk"],
+datasets:[{
+data:[high,medium,low],
+backgroundColor:["#ef4444","#f59e0b","#10b981"]
+}]
+}
+})
+
+</script>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
